@@ -1,0 +1,46 @@
+@import url('https://use.typekit.net/acu0pnl.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: 'MingLiU';
+    src: url('https://www.fontsaddict.com/fontface/mingliu.TTF');
+  }
+
+  @font-face {
+    font-family: 'Terminal';
+    src: url('/fonts/terminal-grotesque.ttf') format('truetype');
+    /* or relative path if needed: url('../fonts/terminal-grotesque.ttf') etc. */
+    font-weight: normal;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Inter';
+    src: url('/fonts/inter.ttf') format('truetype');
+    /* or relative path if needed: url('../fonts/terminal-grotesque.ttf') etc. */
+    font-weight: 300;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Botch';
+    src: url('/fonts/botch.otf') format('truetype');
+    /* or relative path if needed: url('../fonts/terminal-grotesque.ttf') etc. */
+
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'HelveticaNeue';
+    src: url('/fonts/HelveticaNeue.ttc') format('truetype');
+
+  }
+
+
+
+
+}

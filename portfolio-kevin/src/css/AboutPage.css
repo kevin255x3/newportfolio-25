@@ -1,0 +1,6 @@
+html,
+body {
+    height: auto;
+    overflow-y: auto;
+    /* enable vertical scrolling */
+}

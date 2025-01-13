@@ -1,0 +1,26 @@
+/* src/components/ProjectList.css */
+*,
+html,
+body {
+    margin: 0;
+    padding: 0;
+
+}
+
+.project-list-container {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.project-list-container::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+}
+
+.project-image {
+    /* Removed rounded corners */
+}

@@ -1,0 +1,32 @@
+html,
+body {
+    margin: 0;
+    /* remove default browser margins */
+    padding: 0;
+    /* overflow: hidden; */
+    /* disables scrolling */
+    /* height: 0; */
+    /* ensures body expands to full viewport height */
+
+}
+
+
+
+/* This class applies the perspective on the container */
+.perspective-3d {
+    perspective: 2000px;
+}
+
+/* The tilted panel uses a vertical tilt (-20 degrees). 
+     transform-style: preserve-3d ensures it retains the 3D effect. */
+.vertical-tilt {
+    transform-style: preserve-3d;
+    transform: rotateY(-40deg);
+}
+
+.vertical-tilt-two {
+    transform-style: preserve-3d;
+    transform: rotateY(40deg);
+}
+
+/* HomePage.css (global, will affect the entire site) */
