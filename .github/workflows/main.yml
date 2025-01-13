@@ -15,19 +15,14 @@ jobs:
           node-version: '20'
       - name: ⛏️Build Project
         run: |
-          cd portfolio-kevin
+          cd kevin-portfolio
           npm install
           npm run build
-      - name: List build directory
-        run: |
-          cd portfolio-kevin
-          ls -la dist/
       - name: 📁 Sync files
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: "portfolio-kevin/dist/"
-          
-    
+          local-dir: "kevin-portfolio/dist/"
+          server-dir: "/"
