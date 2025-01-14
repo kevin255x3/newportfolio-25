@@ -10,7 +10,6 @@ function HomePage() {
     const [loadedImages, setLoadedImages] = useState({});
 
     React.useEffect(() => {
-        // Preload images
         const imagePaths = {
             projects: './baldy.jpg',
             about: './img/who-preview.png',
@@ -79,8 +78,7 @@ function HomePage() {
                 <>
                     {!isVideoLoaded && renderLoadingPlaceholder()}
                     <video
-                        className={`w-full h-full object-cover transition-opacity duration-300 ${isVideoLoaded ? 'opacity-100' : 'opacity-0'
-                            }`}
+                        className={`w-full h-full object-cover transition-opacity duration-300 ${isVideoLoaded ? 'opacity-100' : 'opacity-0'}`}
                         src="./portfolio.mp4"
                         autoPlay
                         loop
@@ -103,9 +101,9 @@ function HomePage() {
         }>
             <TitleText />
             <div className={`w-screen h-screen flex items-center justify-center transition-colors duration-200 ${bgClass}`}>
-                <div className="relative w-[1920px] h-[1080px] flex items-center justify-center perspective-3d">
-                    <div className="w-80 h-96 border border-americanred flex items-center justify-center mr-16 vertical-tilt text-sm font-ming">
-                        <ul className="space-y-3 text-xl text-center">
+                <div className="relative w-full h-full max-w-6xl max-h-screen px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center justify-center perspective-3d">
+                    <div className="w-full lg:w-80 h-64 lg:h-96 border border-americanred flex items-center justify-center mb-8 lg:mb-0 lg:mr-16 vertical-tilt text-sm font-ming">
+                        <ul className="space-y-3 text-lg sm:text-xl text-center">
                             <li onMouseEnter={() => handleMouseEnter("projects")} onMouseLeave={handleMouseLeave}>
                                 <Link to="/projects">Portfolio</Link>
                             </li>
@@ -118,7 +116,7 @@ function HomePage() {
                         </ul>
                     </div>
 
-                    <div className="border-americanblue w-80 h-96 overflow-hidden border flex items-center justify-center vertical-tilt-two">
+                    <div className="border-americanblue w-full lg:w-80 h-64 lg:h-96 overflow-hidden border flex items-center justify-center vertical-tilt-two">
                         {rightPanelContent}
                     </div>
                 </div>
@@ -129,15 +127,15 @@ function HomePage() {
                     <img
                         src="./footer.png"
                         alt="Creature"
-                        className="fixed bottom-0 right-0 w-80 h-96"
+                        className="fixed bottom-0 right-0 w-48 sm:w-64 lg:w-80 h-48 sm:h-64 lg:h-96"
                         loading="lazy"
                     />
                 ) : (
-                    <div className="fixed bottom-0 right-0 w-80 h-96 bg-gray-200 animate-pulse" />
+                    <div className="fixed bottom-0 right-0 w-48 sm:w-64 lg:w-80 h-48 sm:h-64 lg:h-96 bg-gray-200 animate-pulse" />
                 )}
             </div>
 
-            <div className="fixed bottom-0 left-0 mb-4 ml-4 space-y-2 font-ming text-md tracking-wide text-black">
+            <div className="fixed bottom-0 left-0 mb-4 ml-4 space-y-2 font-ming text-sm sm:text-md tracking-wide text-black">
                 <a href="#" className="block hover:text-americanred transition-colors duration-200">LinkedIn</a>
                 <a href="#" className="block hover:text-americanred transition-colors duration-200">Resume</a>
                 <a href="#" className="block hover:text-americanred transition-colors duration-200">YouTube</a>
