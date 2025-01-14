@@ -128,7 +128,7 @@ const PROJECTS = [
             "Working with other creatives is always eye-opening. We got together to style and photograph some really special pieces from our collection. Everyone brought their own perspective, which made the whole process more interesting. From planning the shots to actually capturing them, we tried to show these clothes in a way that would resonate with people who appreciate the craft behind them.",
         notes:
             "Shot everything on the Sony a6100 to get those rich colors and details just right. You can see the whole process come together in our video on YouTube.",
-        media: "/img/project3_media.mp4",
+        media: "/baldy.mp4",
         software: "Premier Pro CC, After Effects CC, Illustrator CC",
         link: "https://youtu.be/Qtj2uKibhmo",
         processSteps: [

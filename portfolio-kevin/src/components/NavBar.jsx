@@ -1,38 +1,60 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { Menu, X } from "lucide-react";
 
+// NavBar Component
 function NavBar() {
+    const [isOpen, setIsOpen] = useState(false);
+
     return (
-        <nav className="py-2">
-            <div className="container mx-auto flex items-center justify-between px-8">
-                {/* Logo Section */}
-                <div className="flex items-center">
-                    <img src="./logo.png" alt="Logo" className="w-36 h-16 object-contain" />
+        <nav className="py-2 relative bg-white z-50">
+            <div className="container mx-auto px-4 lg:px-8">
+                <div className="flex items-center justify-between">
+                    {/* Logo Section */}
+                    <div className="flex items-center">
+                        <img src="./logo.png" alt="Logo" className="w-24 h-12 md:w-36 md:h-16 object-contain" />
+                    </div>
+
+                    {/* Mobile Menu Button */}
+                    <button
+                        className="lg:hidden p-2"
+                        onClick={() => setIsOpen(!isOpen)}
+                        aria-label="Toggle menu"
+                    >
+                        {isOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
+
+                    {/* Desktop Navigation */}
+                    <ul className="hidden lg:flex space-x-6">
+                        {['Home', 'About', 'Projects', 'Contact'].map((item) => (
+                            <li key={item}>
+                                <Link
+                                    to={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
+                                    className="text-black hover:text-royal font-ming text-sm"
+                                >
+                                    {item}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
 
-                {/* Navigation Links */}
-                <ul className="flex space-x-6">
-                    <li>
-                        <Link to="/" className="text-black hover:text-royal font-ming text-sm">
-                            Home
-                        </Link>
-                    </li>
-                    <li>
-                        <Link to="/about" className="text-black hover:text-royal font-ming text-sm">
-                            About
-                        </Link>
-                    </li>
-                    <li>
-                        <Link to="/projects" className="text-black hover:text-royal font-ming text-sm">
-                            Projects
-                        </Link>
-                    </li>
-                    <li>
-                        <Link to="/contact" className="text-black hover:text-royal font-ming text-sm">
-                            Contact
-                        </Link>
-                    </li>
-                </ul>
+                {/* Mobile Navigation */}
+                <div className={`lg:hidden ${isOpen ? 'block' : 'hidden'}`}>
+                    <ul className="pt-2 pb-4 space-y-2">
+                        {['Home', 'About', 'Projects', 'Contact'].map((item) => (
+                            <li key={item}>
+                                <Link
+                                    to={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
+                                    className="block px-2 py-2 text-black hover:text-royal font-ming text-sm"
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    {item}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
         </nav>
     );

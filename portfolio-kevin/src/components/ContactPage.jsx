@@ -6,18 +6,15 @@ function ContactPage() {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
-        // Fade in content on mount
         const timer = setTimeout(() => setIsVisible(true), 100);
         return () => clearTimeout(timer);
     }, []);
 
-    // Social links with proper security attributes
     const socialLinks = [
         { name: "LinkedIn", url: "https://www.linkedin.com/in/kevin-l-280314285/" },
         { name: "YouTube", url: "https://www.youtube.com/@dinnereservations/videos" }
     ];
 
-    // Skills data structure
     const skillsData = [
         {
             title: "Skills",
@@ -53,7 +50,9 @@ function ContactPage() {
                 w-full
                 max-w-[1400px]
                 mx-auto
-                px-8
+                px-4
+                sm:px-6
+                lg:px-8
                 py-12
                 text-black
                 text-sm
@@ -62,10 +61,10 @@ function ContactPage() {
                 duration-500
                 ${isVisible ? 'opacity-100' : 'opacity-0'}
             `}>
-                <div className="grid grid-cols-[1fr_300px] gap-x-12">
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 lg:gap-x-12">
                     {/* Left Column */}
                     <div>
-                        <div className="grid grid-cols-[200px_1fr] gap-x-8 gap-y-16 items-start">
+                        <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-4 sm:gap-x-8 gap-y-8 sm:gap-y-16 items-start">
                             {skillsData.map((section, index) => (
                                 <React.Fragment key={index}>
                                     <div className="text-americanred font-semibold font-ming tracking-widest text-bold">
@@ -98,7 +97,7 @@ function ContactPage() {
                     </div>
 
                     {/* Right Column */}
-                    <div className="flex justify-start">
+                    <div className="flex justify-center lg:justify-start">
                         <div className="w-full max-w-[300px] h-[350px] relative">
                             {!isImageLoaded && (
                                 <div className="absolute inset-0 bg-gray-200 animate-pulse" />
@@ -106,8 +105,7 @@ function ContactPage() {
                             <img
                                 src="./img/misc-preview.png"
                                 alt="Miscellaneous Preview"
-                                className={`w-full h-full object-cover transition-opacity duration-300 ${isImageLoaded ? 'opacity-100' : 'opacity-0'
-                                    }`}
+                                className={`w-full h-full object-cover transition-opacity duration-300 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
                                 loading="lazy"
                                 onLoad={() => setIsImageLoaded(true)}
                                 onError={(e) => {
