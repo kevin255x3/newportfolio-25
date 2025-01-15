@@ -18,7 +18,7 @@ function ContactPage() {
     const skillsData = [
         {
             title: "Skills",
-            content: "Marketing, Brand Identity, Web Design, Illustration, Graphic Design, Cinematography, Visual Communication, Project Management"
+            content: "Marketing, Brand Identity, Web Design, UI/UX Design, Prototyping, Illustration, Graphic Design, Cinematography, Visual Communication, Project Management"
         },
         {
             title: "Softwares",
