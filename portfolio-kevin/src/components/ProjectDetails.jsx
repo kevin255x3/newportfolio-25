@@ -1,145 +1,168 @@
-import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { ChevronRight, ChevronDown, Clock, ArrowRight } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Play, X, Clock, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import ProcessTimeline from "./ProcessTimeline";
 
-// ProcessSteps component - Add this inside the same file
-
-
 function ProjectDetails({ project, onBack }) {
+    const [activeMedia, setActiveMedia] = useState(0);
+    const [isMediaLoading, setIsMediaLoading] = useState(true);
+
     useEffect(() => {
         const handleKeyDown = (e) => {
-            if (e.key === 'Escape') {
-                onBack();
-            }
+            if (e.key === 'Escape') onBack();
+            if (e.key === 'ArrowRight') handleNextMedia();
+            if (e.key === 'ArrowLeft') handlePrevMedia();
         };
         window.addEventListener('keydown', handleKeyDown);
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
+        return () => window.removeEventListener('keydown', handleKeyDown);
     }, [onBack]);
+
+    const handleNextMedia = () => {
+        if (!Array.isArray(project.media)) return;
+        setActiveMedia((prev) => (prev + 1) % project.media.length);
+        setIsMediaLoading(true);
+    };
+
+    const handlePrevMedia = () => {
+        if (!Array.isArray(project.media)) return;
+        setActiveMedia((prev) => (prev - 1 + project.media.length) % project.media.length);
+        setIsMediaLoading(true);
+    };
+
+    // Ensure media is always treated as an array
+    const mediaArray = Array.isArray(project.media)
+        ? project.media
+        : [{ url: project.media, type: project.media?.endsWith('.mp4') ? 'video' : 'image' }];
 
     return (
         <motion.div
-            className="fixed inset-0 bg-white bg-opacity-95 z-50 overflow-y-auto p-6"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={`project-title-${project.id}`}
+            className="fixed inset-0 bg-white z-50"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1, transition: { duration: 0.5 } }}
-            exit={{ opacity: 0, transition: { duration: 0.3 } }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
         >
-            {/* Back Button */}
-            <div className="mb-6">
+            {/* Asymmetric Header */}
+            <div className="fixed top-0 left-0 right-0 z-50 flex h-12">
                 <button
                     onClick={onBack}
-                    className="border border-americanblue px-4 py-2 hover:bg-gray-100 font-ming tracking-wider focus:outline-none focus:ring-2 focus:ring-americanblue"
-                    aria-label="Back to Projects"
+                    className="bg-black text-white px-4 hover:bg-americanred transition-colors flex items-center gap-2"
                 >
-                    &larr; Back to Projects
+                    <X className="w-4 h-4" />
+                    <span className="font-ming text-sm">EXIT</span>
                 </button>
+                <div className="flex-1 bg-white px-4 font-ming text-sm flex items-center overflow-hidden">
+                    {project.title} / {project.subtitle}
+                </div>
+                {project.link && (
+                    <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-americanblue text-white px-4 hover:bg-americanred transition-colors flex items-center gap-2"
+                    >
+                        <span className="font-ming text-sm">VIEW</span>
+                        <ArrowRight className="w-4 h-4" />
+                    </a>
+                )}
             </div>
 
-            <div className="mx-auto w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Left Column - Kept the same */}
-                <div className="col-span-1 space-y-6 border border-americanbluelight p-4">
-                    {/* ... (keep existing left column code) ... */}
-                    {/* Title / Subtitle */}
-                    <div>
-                        <h2
-                            id={`project-title-${project.id}`}
-                            className="text-xl  text-gray-900 font-ming tracking-wider"
-                        >
-                            {project.title}
-                        </h2>
-                        <p className="text-black font-ming tracking-wider">
-                            {project.subtitle}
-                        </p>
-                    </div>
+            <div className="h-screen overflow-hidden pt-12">
+                {/* Split View */}
+                <div className="flex flex-col md:flex-row h-full">
 
-                    {/* Software/Skills */}
-                    <div>
-                        <h3 className="text-base  text-black font-ming tracking-wider mb-1">
-                            Software / Skills
-                        </h3>
-                        <p className="text-black text-sm font-helvetica">{project.software}</p>
-                    </div>
 
-                    {/* Notes / Link */}
-                    <div>
-                        <h3 className="text-base  text-black font-ming tracking-wider mb-1">
-                            Additional Info
-                        </h3>
-                        {project.notes ? (
-                            <p className="text-black text-sm font-helvetica">{project.notes}</p>
-                        ) : (
-                            <p className="text-gray-500 italic text-sm">
-                                No additional notes provided.
-                            </p>
-                        )}
-
-                        {project.link && (
-                            <div className="mt-3">
-                                <button className="border border-americanblue px-4 py-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-americanblue">
-                                    <a
-                                        href={project.link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-americanblue underline"
-                                    >
-                                        View the Project
-                                    </a>
-                                </button>
+                    {/* Left - Media Viewer */}
+                    <div className="md:w-2/3 h-full relative bg-white flex items-center justify-center">
+                        {isMediaLoading && (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin" />
                             </div>
                         )}
-                    </div>
-                </div>
 
-                {/* Right Columns */}
-                <div className="md:col-span-2 space-y-6">
-                    {/* Description */}
-                    <div className="border border-americanbluelight p-4">
-                        <h2 className="font-ming tracking-wider  text-lg text-black mb-2">
-                            Description
-                        </h2>
-                        <p className="text-black text-sm leading-relaxed">
-                            {project.description}
-                        </p>
-                    </div>
+                        <div className="relative w-full h-full flex items-center justify-center">
+                            {mediaArray[activeMedia].type === 'video' ? (
+                                <video
+                                    key={mediaArray[activeMedia].url}
+                                    src={mediaArray[activeMedia].url}
+                                    controls
+                                    className="max-h-full w-auto"
+                                    onLoadedData={() => setIsMediaLoading(false)}
+                                />
+                            ) : (
+                                <img
+                                    src={mediaArray[activeMedia].url}
+                                    alt={mediaArray[activeMedia].caption || project.title}
+                                    className="max-h-full w-auto"
+                                    onLoad={() => setIsMediaLoading(false)}
+                                />
+                            )}
+                        </div>
 
-                    {/* New Process Section */}
-                    <div className="border border-americanbluelight p-4">
-                        <h2 className="font-ming font-semibold text-lg text-black mb-4 flex items-center gap-2">
-                            <Clock className="w-5 h-5" />
-                            Process Journey
-                        </h2>
-                        <ProcessTimeline project={project} />
-                    </div>
-
-                    {/* Media Section */}
-                    <div className="border border-americanblue p-4">
-                        <h2 className="font-ming tracking-wider  text-lg text-black mb-2">
-                            Media
-                        </h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="bg-gray-100 flex items-center justify-center p-2">
-                                {project.media.endsWith(".mp4") ? (
-                                    <video
-                                        src={project.media}
-                                        controls
-                                        className="w-full h-auto object-cover"
-                                    />
-                                ) : (
-                                    <img
-                                        src={project.media}
-                                        alt="Media"
-                                        className="w-full h-auto object-cover"
-                                        onError={(e) => {
-                                            e.target.onerror = null;
-                                            e.target.src = "/fallback-image.jpg";
+                        {/* Media Navigation */}
+                        <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-black">
+                            <div className="flex overflow-x-auto scrollbar-hide">
+                                {mediaArray.map((media, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => {
+                                            setActiveMedia(index);
+                                            setIsMediaLoading(true);
                                         }}
-                                    />
+                                        className={`flex-shrink-0 w-20 h-20 relative border-r border-black
+                        ${activeMedia === index ? 'bg-black' : 'hover:bg-gray-50'}`}
+                                    >
+                                        <img
+                                            src={typeof media === 'string' ? media : media.url}
+                                            alt=""
+                                            className={`w-full h-full object-cover 
+                            ${activeMedia === index ? 'opacity-50' : ''}`}
+                                        />
+                                        {media.type === 'video' && (
+                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                <Play className={`w-4 h-4 ${activeMedia === index ? 'text-white' : 'text-black'}`} />
+                                            </div>
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right - Content Scroll - adjust spacing */}
+                    <div className="md:w-1/3 h-full overflow-y-auto border-l border-black">
+                        <div className="p-6 space-y-8">
+                            <div className="space-y-2 pb-6 border-b border-black">
+                                <h1 className="text-2xl font-ming">{project.title}</h1>
+                                <p className="font-ming text-base">{project.subtitle}</p>
+                            </div>
+
+                            <div>
+                                <h2 className="text-sm font-ming mb-3">SOFTWARE & SKILLS</h2>
+                                <div className="flex flex-wrap gap-2">
+                                    {project.software.split(',').map((skill, index) => (
+                                        <span
+                                            key={index}
+                                            className="px-2 py-1 border border-black text-xs font-ming hover:bg-black hover:text-white transition-colors"
+                                        >
+                                            {skill.trim()}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="prose prose-sm">
+                                <p className="leading-relaxed">{project.description}</p>
+                                {project.notes && (
+                                    <p className="mt-4 text-sm border-l-2 border-black pl-4">{project.notes}</p>
                                 )}
+                            </div>
+
+                            <div className="pt-6 border-t border-black">
+                                <h2 className="text-sm font-ming mb-6 flex items-center gap-2">
+                                    <Clock className="w-4 h-4" />
+                                    PROCESS TIMELINE
+                                </h2>
+                                <ProcessTimeline project={project} />
                             </div>
                         </div>
                     </div>
