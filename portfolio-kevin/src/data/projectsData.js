@@ -4,39 +4,11 @@ const PROJECTS = [
         title: "Project 001",
         subtitle: "Archive clothing photoshoot",
         previewImg: "./baldy.jpg",
-        media: [
-            {
-                url: "./baldy.jpg",
-                type: "image",
-                caption: "Editorial shoot"
-            },
-            {
-                url: "./baldy2.jpg",
-                type: "image",
-                caption: "Outfit"
-            },
-            {
-                url: "./baldy3.jpg",
-                type: "image",
-                caption: "Outfit"
-            },
-            {
-                url: "./baldy4.jpg",
-                type: "image",
-                caption: "Outfit"
-            },
-            {
-                url: "./baldy5.jpg",
-                type: "image",
-                caption: "Outfit"
-            },
-
-        ],
         description:
             "We had the chance to work with some really special pieces from Jean Paul Gaultier, Kapital, and Yohji Yamamoto from the early 2000s. The whole process of putting together the moodboard and planning the shoot was pretty amazing - we wanted to make sure each vintage piece got the spotlight it deserved.",
         notes:
             "Take a look at the full collection and what inspired us over on Are.na.",
-
+        media: "./baldy.jpg",
         software: "Photoshop",
         link: "https://www.are.na/kevin-lazo/baldylox-x-doubleback",
         processSteps: [
