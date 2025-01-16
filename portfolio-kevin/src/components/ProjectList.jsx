@@ -54,9 +54,8 @@ function ProjectList({ onSelectProject }) {
                                 )}
 
                                 {/* Always try to load the image */}
-
                                 <img
-                                    src={Array.isArray(proj.previewImg) ? proj.previewImg[0].url : proj.previewImg}
+                                    src={proj.previewImg}
                                     alt={`${proj.title} preview`}
                                     className={`w-full h-full object-cover filter grayscale hover:grayscale-0 transition duration-300 ${loadedImages.has(proj.id) ? 'opacity-100' : 'opacity-0'
                                         }`}
@@ -64,7 +63,7 @@ function ProjectList({ onSelectProject }) {
                                     onLoad={() => handleImageLoad(proj.id)}
                                     onError={(e) => {
                                         console.error(`Failed to load image for project: ${proj.title}`);
-                                        e.target.src = '/fallback-image.jpg';
+                                        e.target.src = '/fallback-image.jpg'; // Make sure to have a fallback image
                                     }}
                                 />
                             </div>
