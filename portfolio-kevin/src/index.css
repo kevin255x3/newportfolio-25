@@ -4,6 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* changed ttf to woff */
 @layer base {
   @font-face {
     font-family: 'MingLiU';
