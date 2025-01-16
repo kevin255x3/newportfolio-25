@@ -187,6 +187,7 @@ function HomePage() {
                     </motion.div>
 
                     {/* Footer Links */}
+                    {/* add links */}
                     <div className="fixed bottom-0 left-0 p-8 space-y-2 font-ming text-sm">
                         <motion.a whileHover={{ x: 10 }} href="https://www.linkedin.com/in/kevin-l-280314285/" className="block hover:text-americanred transition-colors">
                             LinkedIn

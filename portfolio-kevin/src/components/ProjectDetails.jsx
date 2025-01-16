@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Play, X, Clock, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import ProcessTimeline from "./ProcessTimeline";
 
+//perspective
 function ProjectDetails({ project, onBack }) {
     const [activeMedia, setActiveMedia] = useState(0);
     const [isMediaLoading, setIsMediaLoading] = useState(true);
