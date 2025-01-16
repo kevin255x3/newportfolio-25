@@ -9,6 +9,7 @@ function HomePage() {
     const [loadedImages, setLoadedImages] = React.useState({});
     const [mousePosition, setMousePosition] = React.useState({ x: 0, y: 0 });
     const mediaPanelRef = React.useRef(null);
+    const videoRef = React.useRef(null);
 
     React.useEffect(() => {
         const imagePaths = {
@@ -24,6 +25,30 @@ function HomePage() {
             img.src = path;
         });
     }, []);
+
+    // Keep video playing when component updates
+    React.useEffect(() => {
+        if (videoRef.current) {
+            const playVideo = () => {
+                videoRef.current.play().catch(error => {
+                    console.error('Video playback failed:', error);
+                });
+            };
+
+            // Play video initially
+            playVideo();
+
+            // Add event listener for when video ends
+            videoRef.current.addEventListener('ended', playVideo);
+
+            // Clean up
+            return () => {
+                if (videoRef.current) {
+                    videoRef.current.removeEventListener('ended', playVideo);
+                }
+            };
+        }
+    }, [hoveredLink]); // Re-run when hoveredLink changes
 
     const handleMouseMove = (e) => {
         if (!mediaPanelRef.current) return;
@@ -90,17 +115,24 @@ function HomePage() {
                 <>
                     {!isVideoLoaded && renderLoadingPlaceholder()}
                     <motion.video
+                        ref={videoRef}
                         className={`w-full h-full object-cover`}
-                        src="/portfolio.mp4"
+                        src="/portfolio2.mp4"
                         autoPlay
                         loop
                         muted
                         playsInline
-                        preload="auto"
+                        preload="lazy"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: isVideoLoaded ? 1 : 0 }}
                         transition={{ duration: 0.3 }}
-                        onLoadedData={() => setIsVideoLoaded(true)}
+                        onLoadedData={() => {
+                            setIsVideoLoaded(true);
+                            // Ensure video plays after loading
+                            videoRef.current.play().catch(error => {
+                                console.error('Video playback failed:', error);
+                            });
+                        }}
                     />
                 </>
             );
