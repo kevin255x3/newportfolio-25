@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import NavBar from "./NavBar";
+import { motion } from "framer-motion";
 
 function ContactPage() {
     const [isImageLoaded, setIsImageLoaded] = useState(false);
@@ -43,69 +44,109 @@ function ContactPage() {
         }
     ];
 
+    const containerVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.6,
+                staggerChildren: 0.1
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 10 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.4 }
+        }
+    };
+
     return (
         <>
             <NavBar />
-            <main className={`
-                w-full
-                max-w-[1400px]
-                mx-auto
-                px-4
-                sm:px-6
-                lg:px-8
-                py-12
-                text-black
-                text-sm
-                leading-relaxed
-                transition-opacity
-                duration-500
-                ${isVisible ? 'opacity-100' : 'opacity-0'}
-            `}>
-                <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 lg:gap-x-12">
+            <motion.main
+                initial="hidden"
+                animate="visible"
+                variants={containerVariants}
+                className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 text-black text-sm leading-relaxed"
+            >
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8 lg:gap-12">
                     {/* Left Column */}
-                    <div>
-                        <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-4 sm:gap-x-8 gap-y-8 sm:gap-y-16 items-start">
+                    <motion.div
+                        variants={containerVariants}
+                        className="space-y-8 md:space-y-0"
+                    >
+                        <div className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-4 sm:gap-x-8 gap-y-6 sm:gap-y-12 items-start">
                             {skillsData.map((section, index) => (
-                                <React.Fragment key={index}>
-                                    <div className="text-americanred font-semibold font-ming tracking-widest text-bold">
+                                <motion.div
+                                    key={index}
+                                    variants={itemVariants}
+                                    className="contents"
+                                >
+                                    <div className="text-americanred font-semibold font-ming tracking-widest text-bold transform transition-transform duration-300 hover:translate-x-2">
                                         {section.title}
                                     </div>
-                                    <div className="text-black text-sm font-helvetica leading-relaxed">
+                                    <div className="text-black text-sm font-helvetica leading-relaxed transition-all duration-300 hover:text-gray-800">
                                         {section.type === "links" ? (
                                             section.content.map((link, i) => (
-                                                <React.Fragment key={i}>
+                                                <motion.div
+                                                    key={i}
+                                                    whileHover={{ x: 8 }}
+                                                    transition={{ duration: 0.2 }}
+                                                >
                                                     <a
                                                         href={link.url}
-                                                        className="hover:text-americanred transition-colors duration-200"
+                                                        className="inline-block hover:text-americanred transition-colors duration-300"
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                     >
                                                         {link.name}
                                                     </a>
                                                     <br />
-                                                </React.Fragment>
+                                                </motion.div>
                                             ))
                                         ) : (
-                                            <p style={{ whiteSpace: 'pre-line' }}>
+                                            <p
+                                                style={{ whiteSpace: 'pre-line' }}
+                                                className="transition-all duration-300 hover:text-gray-800"
+                                            >
                                                 {section.content}
                                             </p>
                                         )}
                                     </div>
-                                </React.Fragment>
+                                </motion.div>
                             ))}
                         </div>
-                    </div>
+                    </motion.div>
 
                     {/* Right Column */}
-                    <div className="flex justify-center lg:justify-start">
-                        <div className="w-full max-w-[300px] h-[350px] relative">
+                    <motion.div
+                        variants={containerVariants}
+                        className="flex justify-center lg:justify-start"
+                    >
+                        <div className="w-full max-w-[300px] h-[350px] relative overflow-hidden rounded-sm">
                             {!isImageLoaded && (
-                                <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+                                <motion.div
+                                    initial={{ opacity: 0.6 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+                                    className="absolute inset-0 bg-gray-200"
+                                />
                             )}
-                            <img
+                            <motion.img
+                                initial={{ scale: 1.1, opacity: 0 }}
+                                animate={{
+                                    scale: isImageLoaded ? 1 : 1.1,
+                                    opacity: isImageLoaded ? 1 : 0
+                                }}
+                                transition={{ duration: 0.5 }}
                                 src="./img/misc-preview.png"
                                 alt="Miscellaneous Preview"
-                                className={`w-full h-full object-cover transition-opacity duration-300 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                                className="w-full h-full object-cover"
                                 loading="lazy"
                                 onLoad={() => setIsImageLoaded(true)}
                                 onError={(e) => {
@@ -114,9 +155,9 @@ function ContactPage() {
                                 }}
                             />
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
-            </main>
+            </motion.main>
         </>
     );
 }

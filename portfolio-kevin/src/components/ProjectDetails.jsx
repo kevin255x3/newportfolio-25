@@ -1,13 +1,14 @@
+// ProjectDetails.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, X, Clock, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Play, X, Clock, ArrowRight } from 'lucide-react';
 import ProcessTimeline from "./ProcessTimeline";
 
-//perspective
 function ProjectDetails({ project, onBack }) {
     const [activeMedia, setActiveMedia] = useState(0);
     const [isMediaLoading, setIsMediaLoading] = useState(true);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [isVideo, setIsVideo] = useState(false);
     const mediaPanelRef = useRef(null);
 
     useEffect(() => {
@@ -20,8 +21,14 @@ function ProjectDetails({ project, onBack }) {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [onBack]);
 
+    useEffect(() => {
+        // Check if current media is video
+        const currentMedia = mediaArray[activeMedia];
+        setIsVideo(currentMedia.type === 'video' || (typeof currentMedia === 'string' && currentMedia.endsWith('.mp4')));
+    }, [activeMedia]);
+
     const handleMouseMove = (e) => {
-        if (!mediaPanelRef.current) return;
+        if (!mediaPanelRef.current || isVideo) return;
 
         const rect = mediaPanelRef.current.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -31,6 +38,10 @@ function ProjectDetails({ project, onBack }) {
         const rotateX = ((y / rect.height) - 0.5) * -30;
 
         setMousePosition({ x: rotateY, y: rotateX });
+    };
+
+    const handleMouseLeave = () => {
+        setMousePosition({ x: 0, y: 0 });
     };
 
     const handleNextMedia = () => {
@@ -56,25 +67,24 @@ function ProjectDetails({ project, onBack }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
         >
-            {/* Header */}
-            <div className="fixed top-0 left-0 right-0 z-50 flex h-12">
+            {/* Header - Now responsive */}
+            <div className="fixed top-0 left-0 right-0 z-50 flex h-12 flex-wrap sm:flex-nowrap">
                 <button
                     onClick={onBack}
-                    className="bg-black text-white px-4 hover:bg-americanred transition-colors flex items-center gap-2"
+                    className="bg-black text-white px-4 hover:bg-americanred transition-colors flex items-center gap-2 w-full sm:w-auto"
                 >
                     <X className="w-4 h-4" />
                     <span className="font-ming text-sm">EXIT</span>
                 </button>
                 <div className="flex-1 bg-white px-4 font-ming text-sm flex items-center overflow-hidden">
-                    {project.title} / {project.subtitle}
+                    <span className="truncate">{project.title} / {project.subtitle}</span>
                 </div>
                 {project.link && (
                     <a
-
                         href={project.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-americanblue text-white px-4 hover:bg-americanred transition-colors flex items-center gap-2"
+                        className="bg-americanblue text-white px-4 hover:bg-americanred transition-colors flex items-center gap-2 w-full sm:w-auto justify-center"
                     >
                         <span className="font-ming text-sm">VIEW</span>
                         <ArrowRight className="w-4 h-4" />
@@ -90,39 +100,47 @@ function ProjectDetails({ project, onBack }) {
                             ref={mediaPanelRef}
                             className="w-full h-full flex items-center justify-center"
                             onMouseMove={handleMouseMove}
-                            onMouseLeave={() => setMousePosition({ x: 0, y: 0 })}
+                            onMouseLeave={handleMouseLeave}
                             style={{
-                                perspective: 800,
-                                transformStyle: 'preserve-3d'
+                                perspective: isVideo ? 'none' : 800,
+                                transformStyle: isVideo ? 'flat' : 'preserve-3d'
                             }}
                         >
                             <motion.div
                                 className="w-full h-full flex items-center justify-center"
                                 style={{
-                                    transform: `rotateX(${mousePosition.y}deg) rotateY(${mousePosition.x}deg)`,
+                                    transform: isVideo ? 'none' : `rotateX(${mousePosition.y}deg) rotateY(${mousePosition.x}deg)`,
                                     transition: 'transform 0.2s ease-out'
                                 }}
                             >
-                                {isMediaLoading && (
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                                    </div>
-                                )}
+                                {/* Media loading spinner */}
+                                <AnimatePresence>
+                                    {isMediaLoading && (
+                                        <motion.div
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75"
+                                        >
+                                            <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
 
-                                <div className="relative w-full h-full flex items-center justify-center">
+                                <div className="relative w-full h-full flex items-center justify-center p-4">
                                     {mediaArray[activeMedia].type === 'video' ? (
                                         <video
                                             key={mediaArray[activeMedia].url}
                                             src={mediaArray[activeMedia].url}
                                             controls
-                                            className="max-h-full w-auto"
+                                            className="max-h-full w-auto object-contain"
                                             onLoadedData={() => setIsMediaLoading(false)}
                                         />
                                     ) : (
                                         <img
                                             src={mediaArray[activeMedia].url}
                                             alt={mediaArray[activeMedia].caption || project.title}
-                                            className="max-h-full w-auto"
+                                            className="max-h-full w-auto object-contain"
                                             onLoad={() => setIsMediaLoading(false)}
                                         />
                                     )}
@@ -140,7 +158,7 @@ function ProjectDetails({ project, onBack }) {
                                             setActiveMedia(index);
                                             setIsMediaLoading(true);
                                         }}
-                                        className={`flex-shrink-0 w-20 h-20 relative border-r border-black
+                                        className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 relative border-r border-black
                                             ${activeMedia === index ? 'bg-black' : 'hover:bg-gray-50'}`}
                                     >
                                         <img
@@ -162,10 +180,10 @@ function ProjectDetails({ project, onBack }) {
 
                     {/* Right - Content */}
                     <div className="md:w-1/3 h-full overflow-y-auto border-l border-black">
-                        <div className="p-6 space-y-8">
+                        <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
                             <div className="space-y-2 pb-6 border-b border-black">
-                                <h1 className="text-2xl font-ming">{project.title}</h1>
-                                <p className="font-ming text-base">{project.subtitle}</p>
+                                <h1 className="text-xl sm:text-2xl font-ming">{project.title}</h1>
+                                <p className="font-ming text-sm sm:text-base">{project.subtitle}</p>
                             </div>
 
                             <div>
