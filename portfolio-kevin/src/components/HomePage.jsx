@@ -1,15 +1,27 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+// landing page component set to default route in App.js
+// responsive update - feb 4 2025, on mobile screens only the menu is displayed and everything else is hidden.
 
 function HomePage() {
+    // state managers
+    // tracks which link is hovered
     const [hoveredLink, setHoveredLink] = React.useState(null);
+    // manages videos for hover interactions, transitions to relevant hovered link content
     const [isVideoLoaded, setIsVideoLoaded] = React.useState(false);
+    // track loaded images to show appropiate content
     const [loadedImages, setLoadedImages] = React.useState({});
+    // slight skew effect, tracked by the mouse positiona
     const [mousePosition, setMousePosition] = React.useState({ x: 0, y: 0 });
+
+    //elements on the dom for access
     const mediaPanelRef = React.useRef(null);
     const videoRef = React.useRef(null);
 
+    // image loading
+
+    // preloads images to prevent lag and layout shifts
     React.useEffect(() => {
         const imagePaths = {
             projects: '/baldy.jpg',
@@ -18,6 +30,7 @@ function HomePage() {
             footer: '/footer.png'
         };
 
+        // loads images and updates setLoadedImages state when complete
         Object.entries(imagePaths).forEach(([key, path]) => {
             const img = new Image();
             img.onload = () => setLoadedImages(prev => ({ ...prev, [key]: true }));
@@ -25,6 +38,9 @@ function HomePage() {
         });
     }, []);
 
+
+    // video loading
+    // handles video playback, video looping, and video errors
     React.useEffect(() => {
         if (videoRef.current) {
             const playVideo = () => {
@@ -33,6 +49,7 @@ function HomePage() {
                 });
             };
 
+            // event listener when unmounted to play the video again, for smooth hover effect transitions
             playVideo();
             videoRef.current.addEventListener('ended', playVideo);
 
@@ -44,6 +61,8 @@ function HomePage() {
         }
     }, [hoveredLink]);
 
+    // 3d rotation effect, more subtle, taking inspiration from my first portfolio.
+    // rotation is calculated based on the mouse position relative to the media panel (container)
     const handleMouseMove = (e) => {
         if (!mediaPanelRef.current) return;
 
@@ -51,12 +70,16 @@ function HomePage() {
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
+        // rotation calculates betwween -15 to 15 degrees
         const rotateY = ((x / rect.width) - 0.5) * 30;
         const rotateX = ((y / rect.height) - 0.5) * -30;
 
         setMousePosition({ x: rotateY, y: rotateX });
     };
 
+    // link hover handlers
+
+    // memorized to prevent uneccesary re-renders
     const handleMouseEnter = React.useCallback((linkName) => {
         setHoveredLink(linkName);
     }, []);
@@ -65,11 +88,15 @@ function HomePage() {
         setHoveredLink(null);
     }, []);
 
+    // media panel content (the box)
+    1   // manages content switching and loading states
     const rightPanelContent = React.useMemo(() => {
+        // loading placeholder
         const renderLoadingPlaceholder = () => (
             <div className="w-full h-full bg-gray-200 animate-pulse" />
         );
 
+        // contditional rendering based on hovered link
         if (hoveredLink === "projects" && loadedImages.projects) {
             return (
                 <motion.img
@@ -105,6 +132,7 @@ function HomePage() {
                 />
             );
         } else if (!hoveredLink) {
+            // default content displayed if no link is hovered
             return (
                 <>
                     {!isVideoLoaded && renderLoadingPlaceholder()}
@@ -135,7 +163,7 @@ function HomePage() {
 
     return (
         <div className="min-h-screen w-full overflow-hidden">
-            {/* Title Text */}
+            {/* header section with logo and information */}
             <motion.div
                 className="fixed top-0 left-0 z-50 p-8 transition-opacity duration-300 md:opacity-100"
                 initial={{ opacity: 0 }}
@@ -147,6 +175,7 @@ function HomePage() {
                     alt="logo"
                     className="w-32 h-16 md:w-44 md:h-24 object-contain transition-all duration-300"
                 />
+                {/*  personal information - not visible on mobile */}
                 <div className="hidden md:block text-sm space-y-2 font-ming mt-6">
                     <p>Web Designer</p>
                     <p>Born in 2001, Philippines</p>
@@ -154,16 +183,17 @@ function HomePage() {
                 </div>
             </motion.div>
 
-            {/* Main Content */}
+            {/* main content */}
             <div className="w-full min-h-screen flex items-center justify-center px-4">
                 <div className="relative w-full max-w-6xl flex flex-col md:flex-row items-center justify-center gap-8 transition-all duration-300">
-                    {/* Navigation Panel */}
+                    {/* main navigation links */}
                     <motion.div
                         className="w-full md:w-80 h-screen md:h-96 flex items-center justify-center"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
                     >
+                        {/*  navigation items with hover effects */}
                         <ul className="space-y-6 text-xl md:text-2xl text-center font-ming">
                             <motion.li whileHover={{ x: 10 }} className="transition-all duration-300">
                                 <Link
@@ -198,7 +228,7 @@ function HomePage() {
                         </ul>
                     </motion.div>
 
-                    {/* Media Panel - Hidden on mobile */}
+                    {/* media panel - hidden on mobile*/}
                     <motion.div
                         ref={mediaPanelRef}
                         className="hidden md:block border border-black w-full md:w-80 h-96 overflow-hidden relative"
@@ -212,6 +242,7 @@ function HomePage() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5 }}
                     >
+                        {/*  media container */}
                         <motion.div
                             className="w-full h-full"
                             style={{
@@ -223,7 +254,7 @@ function HomePage() {
                         </motion.div>
                     </motion.div>
 
-                    {/* Footer Links */}
+                    {/* footer links, hidden on mobile */}
                     <motion.div
                         className="fixed bottom-0 left-0 p-8 space-y-2 font-ming text-sm hidden md:block"
                         initial={{ opacity: 0, y: 20 }}
@@ -241,7 +272,7 @@ function HomePage() {
                         </motion.a>
                     </motion.div>
 
-                    {/* Footer Image - Hidden on mobile */}
+                    {/* footer image - hidden on mobile */}
                     <motion.div
                         className="fixed bottom-0 right-0 hidden md:block"
                         initial={{ opacity: 0 }}
