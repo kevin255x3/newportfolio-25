@@ -2,7 +2,15 @@ import React, { useState, useEffect, useCallback } from "react";
 import NavBar from "./NavBar";
 import { motion, useAnimation } from "framer-motion";
 
+// about page component
+// snap scrolling page with different sections, ensure usability taking into consideration different devices, technology, hardware, and software.
+
+// each video has a loading state to prevent lag
+// can navigate with keyboard and arrow keys
+// adapts to touch devices
 function AboutPage() {
+
+    // state managers
     const [isVideoLoaded, setIsVideoLoaded] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const [currentSection, setCurrentSection] = useState(0);
@@ -10,13 +18,16 @@ function AboutPage() {
     const [isScrolling, setIsScrolling] = useState(false);
     const controls = useAnimation();
 
+    // intialization
     useEffect(() => {
-        // Check if device supports touch
+        // checks if device supports touch / device capabilities
         setIsTouchDevice('ontouchstart' in window);
+        // delayed loading for smoothness
         const timer = setTimeout(() => setIsVisible(true), 100);
         return () => clearTimeout(timer);
     }, []);
 
+    // organized content for easy maintenance and updates, content array.
     const sections = [
         {
             title: "About me",
@@ -51,12 +62,14 @@ function AboutPage() {
         }
     ];
 
-    // Debounced scroll handler
+    // scroll handler using debounce
+    // stops excessive updates when rapidly scrolling
     const handleScroll = useCallback(() => {
         if (isScrolling) return;
         setIsScrolling(true);
         setTimeout(() => setIsScrolling(false), 50);
 
+        // calculate current section based on the position in the viewport
         const sections = document.querySelectorAll('.snap-section');
         const windowHeight = window.innerHeight;
         const scrollPosition = window.scrollY;
@@ -69,11 +82,13 @@ function AboutPage() {
         });
     }, [isScrolling]);
 
+    // scroll event listener
     useEffect(() => {
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, [handleScroll]);
 
+    // navigation with smooth scrolling
     const scrollToSection = useCallback((index) => {
         const section = document.getElementById(`section-${index}`);
         if (section) {
@@ -84,7 +99,7 @@ function AboutPage() {
         }
     }, []);
 
-    // Handle keyboard navigation
+    // keyboard navigation.
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (e.key === 'ArrowDown' && currentSection < sections.length - 1) {
@@ -100,15 +115,17 @@ function AboutPage() {
 
     return (
         <>
+            {/* navigation bar - fixed */}
             <NavBar className="fixed top-0 left-0 w-full z-50" />
 
-            {/* Section Indicators - Hidden on mobile */}
+            {/* section indicators - not visible on mobile */}
             <motion.div
                 className="fixed right-4 top-1/2 transform -translate-y-1/2 space-y-3 z-50 hidden md:block"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
             >
+                {/* indicates active section */}
                 {sections.map((_, index) => (
                     <motion.button
                         key={index}
@@ -120,6 +137,7 @@ function AboutPage() {
                             className={`w-2 h-2 rounded-full transition-all duration-300 ${currentSection === index ? 'bg-americanred w-3 h-3' : 'bg-gray-300'
                                 }`}
                         />
+                        {/* section title when hovered */}
                         <span className="absolute left-full ml-2 text-sm font-ming opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
                             {sections[index].title}
                         </span>
@@ -127,6 +145,7 @@ function AboutPage() {
                 ))}
             </motion.div>
 
+            {/* main content - scrollable with snap */}
             <div
                 className="bg-white overflow-y-auto snap-y snap-mandatory h-screen"
                 style={{ scrollBehavior: 'smooth' }}
@@ -141,8 +160,10 @@ function AboutPage() {
                         viewport={{ once: true, margin: "-20%" }}
                         onViewportEnter={() => setCurrentSection(index)}
                     >
+                        {/* section content */}
                         <div className={`w-full py-12 ${isVisible ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500`}>
                             <div className="w-full max-w-2xl mx-auto px-4">
+                                {/*  video container */}
                                 <motion.div
                                     className="relative rounded-lg overflow-hidden"
                                     whileInView={{ scale: [0.95, 1] }}
@@ -150,6 +171,7 @@ function AboutPage() {
                                 >
                                     {section.isVideo ? (
                                         <>
+                                            {/* video loading placeholder */}
                                             {!isVideoLoaded && (
                                                 <motion.div
                                                     className="w-full aspect-video bg-gray-200"
@@ -157,6 +179,7 @@ function AboutPage() {
                                                     transition={{ duration: 1, repeat: Infinity, repeatType: "reverse" }}
                                                 />
                                             )}
+                                            {/* video */}
                                             <video
                                                 src={section.media}
                                                 className={`w-full object-cover transition-all duration-500 ${isVideoLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
@@ -177,6 +200,7 @@ function AboutPage() {
                                         />
                                     )}
                                 </motion.div>
+                                {/*  text blocks */}
                                 <motion.div
                                     className="mt-8 space-y-4"
                                     initial={{ y: 20, opacity: 0 }}
@@ -204,7 +228,7 @@ function AboutPage() {
                 ))}
             </div>
 
-            {/* Scroll Indicator - Only shown on first load and hidden on touch devices */}
+            {/* scroll indicator - on the side, loads on intialization, not availble on touch devices */}
             <motion.div
                 className={`fixed bottom-8 left-1/2 transform -translate-x-1/2 text-sm font-ming ${isTouchDevice ? 'hidden' : ''
                     }`}
