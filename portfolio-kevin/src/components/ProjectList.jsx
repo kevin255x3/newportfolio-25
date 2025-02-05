@@ -2,7 +2,13 @@ import React, { useRef, useState, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import PROJECTS from "../data/projectsData";
 
+// project list component 1/3 components that builds the project view
+
+// ensure usability with keyboard, drag and mouse controls
+// updated responsiveness on feb 4 2025
+// image loading management
 function ProjectList({ onSelectProject }) {
+    // references and state managers
     const scrollContainerRef = useRef(null);
     const [loadedImages, setLoadedImages] = useState(new Set());
     const [scrollPosition, setScrollPosition] = useState(0);
@@ -11,25 +17,29 @@ function ProjectList({ onSelectProject }) {
     const [scrollLeft, setScrollLeft] = useState(0);
     const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
 
-    // Image loading handler
+    // image loading handler
+    // updates loadingImages state when each image is loaded
     const handleImageLoad = useCallback((projectId) => {
         setLoadedImages(prev => new Set([...prev, projectId]));
     }, []);
 
-    // Scroll position tracking
+    // scroll position tracking
+    // updates progress bar and current project index
     const handleScroll = useCallback((e) => {
         const container = e.target;
         const maxScroll = container.scrollWidth - container.clientWidth;
         const currentScroll = container.scrollLeft;
         setScrollPosition((currentScroll / maxScroll) * 100);
 
-        // Update current project index for keyboard navigation
-        const projectWidth = container.clientWidth * 0.7; // Approximate width of a project
+        // updates current project index for keyboard navigation
+        const projectWidth = container.clientWidth * 0.7; // approximate width of a project
         const newIndex = Math.round(currentScroll / projectWidth);
         setCurrentProjectIndex(Math.max(0, Math.min(newIndex, PROJECTS.length - 1)));
     }, []);
 
-    // Mouse wheel horizontal scroll
+    // horizontal mousewheel scrolling if available
+    // also enables horizontal scrolling with vertical mouse wheel
+
     useEffect(() => {
         const container = scrollContainerRef.current;
         if (!container) return;
@@ -45,13 +55,14 @@ function ProjectList({ onSelectProject }) {
         return () => container.removeEventListener('wheel', handleWheel);
     }, []);
 
-    // Keyboard navigation
+    // keyboard navigation
+    // enables left and right controls to navigate project list
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (!scrollContainerRef.current) return;
 
             const container = scrollContainerRef.current;
-            const projectWidth = container.clientWidth * 0.7; // Approximate width of a project
+            const projectWidth = container.clientWidth * 0.7;
 
             if (e.key === 'ArrowRight' && currentProjectIndex < PROJECTS.length - 1) {
                 container.scrollTo({
@@ -72,7 +83,8 @@ function ProjectList({ onSelectProject }) {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [currentProjectIndex]);
 
-    // Drag scroll functionality
+    // drag controls
+    // enables smooth drag scrolling
     const handleMouseDown = (e) => {
         setIsDragging(true);
         setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
@@ -91,14 +103,16 @@ function ProjectList({ onSelectProject }) {
         setIsDragging(false);
     };
 
-    // Handle image click with drag detection
+    // click handler with drag detection  prevents overlap
+    // cannot click when dragging
     const handleImageClick = (proj, wasDragging) => {
         if (!wasDragging) {
             onSelectProject(proj);
         }
     };
 
-    // Navigation buttons
+    // navigation button handler
+    // scrolls to next / previous project
     const scrollToDirection = (direction) => {
         const container = scrollContainerRef.current;
         if (!container) return;
@@ -123,7 +137,7 @@ function ProjectList({ onSelectProject }) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
         >
-            {/* Navigation Buttons */}
+            {/* navigation buttons - hidden when scroll hits limit */}
             <div className="fixed left-4 right-4 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none z-10">
                 <button
                     onClick={() => scrollToDirection('prev')}
@@ -143,7 +157,7 @@ function ProjectList({ onSelectProject }) {
                 </button>
             </div>
 
-            {/* Scroll Progress Indicator */}
+            {/* scroll progress indicator */}
             <div className="fixed top-4 left-1/2 transform -translate-x-1/2 w-48 h-1 bg-gray-200 rounded-full overflow-hidden">
                 <motion.div
                     className="h-full bg-americanred"
@@ -151,7 +165,7 @@ function ProjectList({ onSelectProject }) {
                 />
             </div>
 
-            {/* Project Container */}
+            {/* project container with snap on scroll */}
             <div
                 ref={scrollContainerRef}
                 onScroll={handleScroll}
@@ -170,6 +184,7 @@ function ProjectList({ onSelectProject }) {
                     scrollBehavior: 'smooth'
                 }}
             >
+                {/* project card layout renders project data from projectsData.js */}
                 {PROJECTS.map((proj, index) => (
                     <motion.div
                         key={proj.id}
@@ -179,6 +194,7 @@ function ProjectList({ onSelectProject }) {
                         transition={{ duration: 0.3, delay: index * 0.1 }}
                         tabIndex={0}
                     >
+                        {/* image */}
                         <div className="group">
                             <div
                                 className="relative aspect-square bg-gray-100 overflow-hidden rounded-lg cursor-pointer"
@@ -186,6 +202,7 @@ function ProjectList({ onSelectProject }) {
                                 role="button"
                                 aria-label={`Open details for ${proj.title}`}
                             >
+                                {/* image loading placeholder */}
                                 {!loadedImages.has(proj.id) && (
                                     <motion.div
                                         className="absolute inset-0 bg-gray-200"
@@ -193,7 +210,7 @@ function ProjectList({ onSelectProject }) {
                                         transition={{ duration: 1, repeat: Infinity, repeatType: "reverse" }}
                                     />
                                 )}
-
+                                {/*  project image with loading state */}
                                 <img
                                     src={Array.isArray(proj.previewImg) ? proj.previewImg[0].url : proj.previewImg}
                                     alt={`${proj.title} preview`}
@@ -210,7 +227,7 @@ function ProjectList({ onSelectProject }) {
                                     }}
                                 />
                             </div>
-
+                            {/* project information */}
                             <div className="mt-4 space-y-2">
                                 <div className="flex justify-between items-center">
                                     <h3 className="text-black text-sm font-ming">
@@ -236,7 +253,7 @@ function ProjectList({ onSelectProject }) {
                 ))}
             </div>
 
-            {/* Control Instructions */}
+            {/* usability instructions */}
             <motion.div
                 className="fixed bottom-4 left-1/2 transform -translate-x-1/2 text-sm font-ming text-gray-500"
                 initial={{ opacity: 0 }}
