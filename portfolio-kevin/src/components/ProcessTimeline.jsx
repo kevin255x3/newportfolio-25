@@ -113,7 +113,7 @@ const ProcessTimeline = ({ project }) => {
                                     >
                                         {/* description */}
                                         <div className="ml-0 sm:ml-14 font-mono text-xs sm:text-sm tracking-wide
-                                                      bg-gray-50 p-4 ">
+                                                       p-4 ">
                                             {step.description.toUpperCase()}
                                         </div>
                                     </motion.div>
