@@ -1,27 +1,31 @@
 // src/components/ProjectsPage.jsx
 
 import React, { useState, useEffect } from "react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion"; // wraps animation for mounting and unmounting
 import NavBar from "./NavBar";
 import ProjectList from "./ProjectList";
 import ProjectDetails from "./ProjectDetails";
 
+// project page component one of the main links - built with multiple components
 function ProjectsPage() {
+    // state manager for tracking selected project
     const [selectedProject, setSelectedProject] = useState(null);
 
+    // when project is selected from list
     const handleSelectProject = (project) => {
         setSelectedProject(project);
-        // Disable body scroll when modal is open
+        // prevents scrolling when project modal is open
         document.body.style.overflow = 'hidden';
     };
 
+    // handles closing the project modal
     const handleBackToSelection = () => {
         setSelectedProject(null);
-        // Re-enable body scroll when modal is closed
+        // renables scroll when modal is closed
         document.body.style.overflow = 'auto';
     };
 
-    // Cleanup in case component unmounts while modal is open
+    // component cleanup when component unmounts - this ensures scrolling is re-enabled
     useEffect(() => {
         return () => {
             document.body.style.overflow = 'auto';
@@ -30,15 +34,21 @@ function ProjectsPage() {
 
     return (
         <>
+            {/* nav bar */}
             <NavBar />
+            {/* container that fills the viewport */}
             <div className="relative w-screen min-h-screen  overflow-hidden">
+                {/* animations on enter and exit for project list component */}
                 <AnimatePresence>
+                    {/* only renders project list when no project is selected */}
                     {!selectedProject && (
                         <ProjectList key="selectionView" onSelectProject={handleSelectProject} />
                     )}
                 </AnimatePresence>
 
+                {/* animations on enter and exit for project details component */}
                 <AnimatePresence>
+                    {/* displays project details when a project is selected */}
                     {selectedProject && (
                         <ProjectDetails
                             key="detailsView"
