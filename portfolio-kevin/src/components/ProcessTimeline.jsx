@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 
 //updated for consistency
+//please
 const ProcessTimeline = ({ project }) => {
     const [expandedStep, setExpandedStep] = useState(null);
 
