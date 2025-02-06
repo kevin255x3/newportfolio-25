@@ -36,7 +36,6 @@ function ProjectList({ onSelectProject }) {
 
     // horizontal mousewheel scrolling if available
     // also enables horizontal scrolling with vertical mouse wheel
-
     useEffect(() => {
         const container = scrollContainerRef.current;
         if (!container) return;
@@ -84,9 +83,8 @@ function ProjectList({ onSelectProject }) {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [currentProjectIndex]);
 
-
-    // click handler with drag detection 
-    const handleImageClick = (proj) => {
+    // click handler for project details
+    const handleProjectClick = (proj) => {
         onSelectProject(proj);
     };
 
@@ -163,19 +161,19 @@ function ProjectList({ onSelectProject }) {
                 {PROJECTS.map((proj, index) => (
                     <motion.div
                         key={proj.id}
-                        className="flex-shrink-0 w-[90%] sm:w-[70%] md:w-[45%] lg:w-[30%] "
+                        className="flex-shrink-0 w-[90%] sm:w-[70%] md:w-[45%] lg:w-[30%]"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.1 }}
                         tabIndex={0}
+                        onClick={() => handleProjectClick(proj)}
+                        role="button"
+                        aria-label={`Open details for ${proj.title}`}
                     >
                         {/* image */}
-                        <div className="group">
+                        <div className="group cursor-pointer">
                             <div
-                                className="relative aspect-square bg-gray-100 overflow-hidden  cursor-pointer"
-                                onClick={() => handleImageClick(proj, isDragging)}
-                                role="button"
-                                aria-label={`Open details for ${proj.title}`}
+                                className="relative aspect-square bg-gray-100 overflow-hidden"
                             >
                                 {/* image loading placeholder */}
                                 {!loadedImages.has(proj.id) && (
@@ -209,7 +207,10 @@ function ProjectList({ onSelectProject }) {
                                         {proj.title}
                                     </h3>
                                     <motion.button
-                                        onClick={() => onSelectProject(proj)}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onSelectProject(proj);
+                                        }}
                                         className="text-sm font-ming text-americanred hover:text-royal 
                                                  transition-colors duration-300  px-2 py-1
                                                  focus:outline-none focus:ring-2 focus:ring-americanblue"
