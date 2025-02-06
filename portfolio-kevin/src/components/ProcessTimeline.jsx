@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 
+//updated for consistency
 const ProcessTimeline = ({ project }) => {
     const [expandedStep, setExpandedStep] = useState(null);
 
