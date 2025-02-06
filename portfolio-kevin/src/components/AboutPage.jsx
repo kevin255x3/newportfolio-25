@@ -134,7 +134,7 @@ function AboutPage() {
                         onClick={() => scrollToSection(index)}
                     >
                         <div
-                            className={`w-2 h-2 rounded-full transition-all duration-300 ${currentSection === index ? 'bg-americanred w-3 h-3' : 'bg-gray-300'
+                            className={`w-2 h-2  transition-all duration-300 ${currentSection === index ? 'bg-americanred w-3 h-3' : 'bg-gray-300'
                                 }`}
                         />
                         {/* section title when hovered */}
@@ -165,7 +165,7 @@ function AboutPage() {
                             <div className="w-full max-w-2xl mx-auto px-4">
                                 {/*  video container */}
                                 <motion.div
-                                    className="relative rounded-lg overflow-hidden"
+                                    className="relative  overflow-hidden"
                                     whileInView={{ scale: [0.95, 1] }}
                                     transition={{ duration: 0.5 }}
                                 >

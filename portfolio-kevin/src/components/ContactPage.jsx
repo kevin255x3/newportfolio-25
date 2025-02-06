@@ -149,7 +149,7 @@ function ContactPage() {
                         className="flex justify-center lg:justify-start"
                     >
                         {/*  image container with loading state */}
-                        <div className="w-full max-w-[300px] h-[350px] relative overflow-hidden rounded-sm">
+                        <div className="w-full max-w-[300px] h-[350px] relative overflow-hidden ">
                             {/*  loading placeholder */}
                             {!isImageLoaded && (
                                 <motion.div

@@ -134,7 +134,7 @@ function ProjectDetails({ project, onBack }) {
                                             exit={{ opacity: 0 }}
                                             className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75"
                                         >
-                                            <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                                            <div className="w-8 h-8 border-2 border-black border-t-transparent  animate-spin" />
                                         </motion.div>
                                     )}
                                 </AnimatePresence>

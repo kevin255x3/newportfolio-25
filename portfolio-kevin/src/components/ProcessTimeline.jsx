@@ -72,7 +72,7 @@ const ProcessTimeline = ({ project }) => {
                                 onClick={() => setExpandedStep(expandedStep === index ? null : index)}
                                 className="text-left group flex items-start gap-2 sm:gap-4 w-full 
                                          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black
-                                         rounded-sm transition-colors duration-200"
+                                          transition-colors duration-200"
                                 aria-expanded={expandedStep === index}
                             >
                                 {/* step number with hover animation */}
@@ -113,7 +113,7 @@ const ProcessTimeline = ({ project }) => {
                                     >
                                         {/* description */}
                                         <div className="ml-0 sm:ml-14 font-mono text-xs sm:text-sm tracking-wide
-                                                      bg-gray-50 p-4 rounded-md">
+                                                      bg-gray-50 p-4 ">
                                             {step.description.toUpperCase()}
                                         </div>
                                     </motion.div>

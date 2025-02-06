@@ -12,9 +12,6 @@ function ProjectList({ onSelectProject }) {
     const scrollContainerRef = useRef(null);
     const [loadedImages, setLoadedImages] = useState(new Set());
     const [scrollPosition, setScrollPosition] = useState(0);
-    const [isDragging, setIsDragging] = useState(false);
-    const [startX, setStartX] = useState(0);
-    const [scrollLeft, setScrollLeft] = useState(0);
     const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
 
     // image loading handler
@@ -45,10 +42,14 @@ function ProjectList({ onSelectProject }) {
         if (!container) return;
 
         const handleWheel = (e) => {
-            if (e.deltaY !== 0) {
-                e.preventDefault();
-                container.scrollLeft += e.deltaY;
-            }
+            e.preventDefault();
+
+            // Determine which delta to use and multiply it for faster scrolling
+            // The multiplier (2.5 here) controls the scroll speed - adjust as needed
+            const scrollAmount = (e.deltaX !== 0 ? e.deltaX : e.deltaY) * 2.5;
+
+            // Direct scroll without smooth behavior for more responsive feel
+            container.scrollLeft += scrollAmount;
         };
 
         container.addEventListener('wheel', handleWheel, { passive: false });
@@ -83,32 +84,10 @@ function ProjectList({ onSelectProject }) {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [currentProjectIndex]);
 
-    // drag controls
-    // enables smooth drag scrolling
-    const handleMouseDown = (e) => {
-        setIsDragging(true);
-        setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
-        setScrollLeft(scrollContainerRef.current.scrollLeft);
-    };
 
-    const handleMouseMove = (e) => {
-        if (!isDragging) return;
-        e.preventDefault();
-        const x = e.pageX - scrollContainerRef.current.offsetLeft;
-        const walk = (x - startX) * 2;
-        scrollContainerRef.current.scrollLeft = scrollLeft - walk;
-    };
-
-    const handleMouseUp = () => {
-        setIsDragging(false);
-    };
-
-    // click handler with drag detection  prevents overlap
-    // cannot click when dragging
-    const handleImageClick = (proj, wasDragging) => {
-        if (!wasDragging) {
-            onSelectProject(proj);
-        }
+    // click handler with drag detection 
+    const handleImageClick = (proj) => {
+        onSelectProject(proj);
     };
 
     // navigation button handler
@@ -141,7 +120,7 @@ function ProjectList({ onSelectProject }) {
             <div className="fixed left-4 right-4 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none z-10">
                 <button
                     onClick={() => scrollToDirection('prev')}
-                    className={`pointer-events-auto p-2 rounded-full bg-white shadow-lg transition-opacity duration-300 ${currentProjectIndex === 0 ? 'opacity-0' : 'opacity-100'}`}
+                    className={`pointer-events-auto p-2  bg-white shadow-lg transition-opacity duration-300 ${currentProjectIndex === 0 ? 'opacity-0' : 'opacity-100'}`}
                     disabled={currentProjectIndex === 0}
                     aria-label="Previous project"
                 >
@@ -149,7 +128,7 @@ function ProjectList({ onSelectProject }) {
                 </button>
                 <button
                     onClick={() => scrollToDirection('next')}
-                    className={`pointer-events-auto p-2 rounded-full bg-white shadow-lg transition-opacity duration-300 ${currentProjectIndex === PROJECTS.length - 1 ? 'opacity-0' : 'opacity-100'}`}
+                    className={`pointer-events-auto p-2  bg-white shadow-lg transition-opacity duration-300 ${currentProjectIndex === PROJECTS.length - 1 ? 'opacity-0' : 'opacity-100'}`}
                     disabled={currentProjectIndex === PROJECTS.length - 1}
                     aria-label="Next project"
                 >
@@ -158,7 +137,7 @@ function ProjectList({ onSelectProject }) {
             </div>
 
             {/* scroll progress indicator */}
-            <div className="fixed top-4 left-1/2 transform -translate-x-1/2 w-48 h-1 bg-gray-200 rounded-full overflow-hidden">
+            <div className="fixed top-4 left-1/2 transform -translate-x-1/2 w-48 h-1 bg-gray-200  overflow-hidden">
                 <motion.div
                     className="h-full bg-americanred"
                     style={{ width: `${scrollPosition}%` }}
@@ -169,26 +148,22 @@ function ProjectList({ onSelectProject }) {
             <div
                 ref={scrollContainerRef}
                 onScroll={handleScroll}
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}
                 className={`
                     w-full overflow-x-auto flex gap-8 px-4 py-8 items-start
                     scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent
-                    snap-x snap-mandatory select-none
-                    ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}
+                     select-none
+                   
                 `}
                 style={{
                     WebkitOverflowScrolling: 'touch',
-                    scrollBehavior: 'smooth'
+
                 }}
             >
                 {/* project card layout renders project data from projectsData.js */}
                 {PROJECTS.map((proj, index) => (
                     <motion.div
                         key={proj.id}
-                        className="flex-shrink-0 w-[90%] sm:w-[70%] md:w-[45%] lg:w-[30%] snap-center"
+                        className="flex-shrink-0 w-[90%] sm:w-[70%] md:w-[45%] lg:w-[30%] "
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.1 }}
@@ -197,7 +172,7 @@ function ProjectList({ onSelectProject }) {
                         {/* image */}
                         <div className="group">
                             <div
-                                className="relative aspect-square bg-gray-100 overflow-hidden rounded-lg cursor-pointer"
+                                className="relative aspect-square bg-gray-100 overflow-hidden  cursor-pointer"
                                 onClick={() => handleImageClick(proj, isDragging)}
                                 role="button"
                                 aria-label={`Open details for ${proj.title}`}
@@ -236,7 +211,7 @@ function ProjectList({ onSelectProject }) {
                                     <motion.button
                                         onClick={() => onSelectProject(proj)}
                                         className="text-sm font-ming text-americanred hover:text-royal 
-                                                 transition-colors duration-300 rounded-md px-2 py-1
+                                                 transition-colors duration-300  px-2 py-1
                                                  focus:outline-none focus:ring-2 focus:ring-americanblue"
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
@@ -261,7 +236,7 @@ function ProjectList({ onSelectProject }) {
                 exit={{ opacity: 0 }}
                 transition={{ delay: 0.5, duration: 0.5 }}
             >
-                Use arrow keys, scroll, or drag to navigate
+                Use arrow keys or scroll to navigate
             </motion.div>
         </motion.div>
     );
