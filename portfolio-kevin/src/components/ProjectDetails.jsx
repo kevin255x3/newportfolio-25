@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Play, X, Clock, ArrowRight } from 'lucide-react';
 import ProcessTimeline from "./ProcessTimeline";
 
+// consistency update
 function ProjectDetails({ project, onBack }) {
     const [activeMedia, setActiveMedia] = useState(0);
     const [isMediaLoading, setIsMediaLoading] = useState(true);
