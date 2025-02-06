@@ -109,7 +109,7 @@ const ProcessTimeline = ({ project }) => {
                                         exit="exit"
                                         className="overflow-hidden"
                                     >
-                                        {/* Description - adjusted padding for mobile */}
+                                        {/* description - aditional padding for mobile */}
                                         <div className="pl-8 md:pl-12 pr-4 py-3 font-helvetica text-sm leading-relaxed">
                                             {step.description}
                                         </div>
