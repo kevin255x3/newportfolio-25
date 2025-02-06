@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion'; // animation library
-import { ChevronDown, ChevronUp } from 'lucide-react'; // icons for expanding/collapsing content
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
 
-// process timeline component, rendered on project details page
 const ProcessTimeline = ({ project }) => {
-    // state manager for tracking which step is expanded - if none then state is set to null
     const [expandedStep, setExpandedStep] = useState(null);
 
-    // subtle animations when content is expanded
     const contentVariants = {
         hidden: {
             opacity: 0,
@@ -17,10 +14,10 @@ const ProcessTimeline = ({ project }) => {
         visible: {
             opacity: 1,
             height: "auto",
-            marginTop: "1.5rem",
+            marginTop: "0.5rem",
             transition: {
                 duration: 0.3,
-                ease: "easeOut"
+                ease: [0.76, 0, 0.24, 1]
             }
         },
         exit: {
@@ -29,79 +26,80 @@ const ProcessTimeline = ({ project }) => {
             marginTop: 0,
             transition: {
                 duration: 0.2,
-                ease: "easeIn"
+                ease: [0.76, 0, 0.24, 1]
             }
         }
     };
 
-    // vertical timeline animation configuration
     const lineVariants = {
         hidden: { scaleY: 0 },
         visible: {
             scaleY: 1,
             transition: {
                 duration: 0.5,
-                ease: "easeOut"
+                ease: [0.76, 0, 0.24, 1]
             }
         }
     };
 
     return (
-        // timeline container, top margin is responsive
-        <div className="relative mt-8 sm:mt-16">
-            {/* vertical timeline in the timeline, with animations */}
+        <div className="relative mt-6">
+            {/* Timeline line */}
             <motion.div
-                className="absolute left-0 top-0 bottom-0 w-px bg-black origin-top"
+                className="absolute left-3 md:left-0 top-0 bottom-0 w-px bg-black/10 origin-top"
                 initial="hidden"
                 animate="visible"
                 variants={lineVariants}
             />
 
-            {/* timeline steps container */}
-            <div className="space-y-8 sm:space-y-16">
-                {/* maps through the process steps array. from the projectsData.js */}
+            <div className="space-y-4 md:space-y-6">
                 {project.processSteps.map((step, index) => (
-                    <div key={index} className="relative group">
-                        {/* connector line */}
-                        <div className="absolute left-0 top-4 w-4 sm:w-6 border-t border-black" />
+                    <motion.div
+                        key={index}
+                        className="relative group"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.1 }}
+                    >
+                        {/* Mobile-optimized connector line */}
+                        <div className="absolute left-3 md:left-0 top-4 w-3 md:w-4 border-t border-black/10" />
 
-                        {/* step parents container */}
-                        <div className="ml-4 sm:ml-6">
-                            {/* collapsable / expandable header */}
-                            <button
+                        <div className="ml-8 md:ml-6">
+                            <motion.button
                                 onClick={() => setExpandedStep(expandedStep === index ? null : index)}
-                                className="text-left group flex items-start gap-2 sm:gap-4 w-full 
-                                         focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black
-                                          transition-colors duration-200"
+                                className="text-left group flex items-start gap-3 md:gap-4 w-full 
+                                         focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-americanred
+                                         transition-colors duration-200 py-1 -ml-2 md:ml-0"
+                                whileHover={{ x: 5 }}
+                                transition={{ duration: 0.2 }}
                                 aria-expanded={expandedStep === index}
                             >
-                                {/* step number with hover animation */}
-                                <div className="font-mono text-2xl sm:text-4xl font-bold -mt-1 transition-colors duration-200
-                                              group-hover:text-americanred">
+                                {/* Step number - smaller on mobile */}
+                                <div className="font-ming text-xl md:text-2xl font-bold text-americanred/75 group-hover:text-americanred 
+                                              transition-colors duration-200 min-w-[2rem] md:min-w-[2.5rem]">
                                     {String(index + 1).padStart(2, '0')}
                                 </div>
 
-                                {/* title and toggle icon container */}
                                 <div className="flex-1 pt-1">
                                     <div className="flex items-center justify-between">
-                                        {/* step title */}
-                                        <h3 className="font-mono uppercase text-xs sm:text-sm tracking-wider 
-                                                     transition-colors duration-200 group-hover:text-americanred">
+                                        {/* Step title - adjusted size for mobile */}
+                                        <h3 className="font-ming text-sm tracking-widest transition-colors duration-200 
+                                                     group-hover:text-americanred pr-4">
                                             {step.label}
                                         </h3>
-                                        {/* toggle icon with opacity animation */}
-                                        <div className="ml-2 opacity-50 group-hover:opacity-100 transition-opacity duration-200">
-                                            {expandedStep === index ? (
-                                                <ChevronUp className="w-4 h-4" />
-                                            ) : (
-                                                <ChevronDown className="w-4 h-4" />
-                                            )}
-                                        </div>
+
+                                        {/* Icon container with touch-friendly padding */}
+                                        <motion.div
+                                            className="text-americanred/75 group-hover:text-americanred p-1"
+                                            animate={{ rotate: expandedStep === index ? 180 : 0 }}
+                                            transition={{ duration: 0.2 }}
+                                        >
+                                            <ChevronDown className="w-4 h-4" />
+                                        </motion.div>
                                     </div>
                                 </div>
-                            </button>
+                            </motion.button>
 
-                            {/* exapandable content section */}
                             <AnimatePresence mode="wait">
                                 {expandedStep === index && (
                                     <motion.div
@@ -111,16 +109,15 @@ const ProcessTimeline = ({ project }) => {
                                         exit="exit"
                                         className="overflow-hidden"
                                     >
-                                        {/* description */}
-                                        <div className="ml-0 sm:ml-14 font-mono text-xs sm:text-sm tracking-wide
-                                                       p-4 ">
-                                            {step.description.toUpperCase()}
+                                        {/* Description - adjusted padding for mobile */}
+                                        <div className="pl-8 md:pl-12 pr-4 py-3 font-helvetica text-sm leading-relaxed">
+                                            {step.description}
                                         </div>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
                         </div>
-                    </div>
+                    </motion.div>
                 ))}
             </div>
         </div>
