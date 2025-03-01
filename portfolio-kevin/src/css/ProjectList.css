@@ -52,3 +52,29 @@ body {
 ::-webkit-scrollbar-track {
     background-color: transparent;
 }
+
+/* Add these to your existing ProjectList.css */
+
+/* Ensure videos behave like images in the grid */
+.project-preview-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: filter 0.5s ease;
+}
+
+/* Maintain grayscale effect for videos */
+.project-preview-video {
+    filter: grayscale(100%);
+}
+
+.project-preview-video:hover {
+    filter: grayscale(0%);
+}
+
+/* Ensure video container maintains aspect ratio */
+.video-container {
+    position: relative;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+}

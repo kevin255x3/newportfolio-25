@@ -31,33 +31,33 @@ function AboutPage() {
     const sections = [
         {
             title: "About me",
-            media: "/about.mp4",
-            isVideo: true,
+            media: "/img/aboutpic.jpg",
+            isVideo: false,
             content: [
-                "Hi, I'm Kevin - a multidisciplinary designer exploring the intersection of digital media and creative expression.",
-                "Based in Vancouver, born in the Philippines, and currently shaping my creative journey at BCIT's New Media Design and Web Development program",
-                "My creative toolkit spans graphic design, web development, product design, motion effects, cinematography, and brand marketing",
-                "I approach each project with curiosity and openness to experimentation, allowing me to discover innovative solutions and fresh perspectives"
+                "Hey, I'm Kevin - I create digital things that connect with people and their stories.",
+                "Vancouver's my home now, though I grew up in the Philippines. I'm currently exploring design and development at BCIT's New Media program.",
+                "Over time, I've found myself drawn to all kinds of creative work - from graphic design and web development to motion effects and cinematography. Each one gives me a different way to bring ideas to life.",
+                "Curiosity keeps me going. I enjoy creating things that work in unexpected ways and might make someone's day a little better."
             ]
         },
         {
             title: "Design Philosophy",
-            media: "/philo.mp4",
+            media: "/designphilosphyo.mp4",
             isVideo: true,
             content: [
-                "I believe in learning through doing - each project is an opportunity to explore new techniques and expand my creative boundaries",
-                "My goal is to blend continuous learning with practical application, creating meaningful work that serves real client needs",
-                "I value the process as much as the outcome, taking thoughtful steps toward growth while maintaining enthusiasm for each new challenge"
+                "I learn best by doing - making something teaches me more than just thinking about it. Each new project is a chance to explore and grow.",
+                "For me, good design comes from combining what I'm learning with simple, clear ideas. I enjoy creating work that actually helps people in their day-to-day.",
+                "I find as much joy in the process as in the finished piece. When you enjoy each step, the creativity just flows more naturally."
             ]
         },
         {
             title: "Beyond Design",
-            media: "/beyond.mp4",
-            isVideo: true,
+            media: "/bdes.jpeg",
+            isVideo: false,
             content: [
-                "My creativity is fueled by my passions in fashion, music, and sports, which naturally influence and enrich my design work",
-                "These diverse interests help me bring fresh perspectives and cultural awareness to my projects",
-                "Currently accepting new projects and eager to collaborate on innovative design solutions. Feel free to reach out to discuss potential opportunities."
+                "The things I love outside of work - fashion, music, basketball - they all find their way into my design thinking somehow.",
+                "Having different interests helps me see connections others might miss. It's like having more colors to paint with or more notes to play.",
+                "I'm drawn to people with passion for what they do. I bring that same energy to my own work - whether it's a personal project, creative exploration, or client solution."
             ]
         }
     ];

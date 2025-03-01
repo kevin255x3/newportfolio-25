@@ -171,7 +171,7 @@ function ContactPage() {
                                     opacity: isImageLoaded ? 1 : 0
                                 }}
                                 transition={{ duration: 0.5 }}
-                                src="./img/misc-preview.png"
+                                src="./img/kevportfolio.png"
                                 alt="Miscellaneous Preview"
                                 className="w-full h-full object-cover"
                                 loading="lazy"
