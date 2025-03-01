@@ -13,9 +13,10 @@ function ProjectsPage() {
 
     // when project is selected from list
     const handleSelectProject = (project) => {
-        setSelectedProject(project);
-        // prevents scrolling when project modal is open
-        document.body.style.overflow = 'hidden';
+        if (project && project.id) {  // Add validation
+            setSelectedProject(project);
+            document.body.style.overflow = 'hidden';
+        }
     };
 
     // handles closing the project modal
